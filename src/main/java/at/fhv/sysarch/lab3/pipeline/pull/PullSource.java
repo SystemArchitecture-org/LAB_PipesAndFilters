@@ -22,4 +22,8 @@ public class PullSource extends Pull<Face, Face>{
     public void setFaces(List<Face> faces) {
         this.faces.addAll(faces);
     }
+
+    public boolean hasNext(){
+        return !faces.isEmpty();
+    }
 }
