@@ -81,6 +81,8 @@ public class PullPipelineFactory {
                 while (afterScreenSpaceTransformation.hasNext()) {
                     Face face = afterScreenSpaceTransformation.pull();
 
+
+
                     pd.getGraphicsContext().setStroke(Color.DEEPPINK);
 
                     pd.getGraphicsContext().strokeLine(face.getV1().getX(), face.getV1().getY(), face.getV2().getX(), face.getV2().getY());
