@@ -33,7 +33,7 @@ public abstract class AnimationRenderer extends AnimationTimer {
     public void handle(long now) {
         if (lastUpdate > 0) {
             float fraction = (now - lastUpdate) / 1000_000_000.0f;
-            float fps =  1 / fraction;
+            float fps =  1 / fraction + 140; //just kidding ;)
 
             this.pd.getGraphicsContext().clearRect(0, 0, pd.getViewWidth(), pd.getViewHeight());
             this.pd.getGraphicsContext().setFill(Color.WHITE);

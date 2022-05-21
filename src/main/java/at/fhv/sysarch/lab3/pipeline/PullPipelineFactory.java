@@ -17,10 +17,11 @@ public class PullPipelineFactory {
 
         // TODO 1. perform model-view transformation from model to VIEW SPACE coordinates
         PullModelViewTransformationFilter<Face> pullModelViewTransformationFilter = new PullModelViewTransformationFilter<>(pullPipe, pd);
-        PullPipe<Face> toProjectTransformationFilter = new PullPipe<>(pullModelViewTransformationFilter);
-
+        PullPipe<Face> toBackfaceCullingFilter = new PullPipe<>(pullModelViewTransformationFilter);
 
         // TODO 2. perform backface culling in VIEW SPACE
+        PullBackfaceCullingFilter<Face> pullBackfaceCullingFilter = new PullBackfaceCullingFilter<>(toBackfaceCullingFilter);
+        PullPipe<Face> toProjectTransformationFilter = new PullPipe<>(pullBackfaceCullingFilter);
 
         // TODO 3. perform depth sorting in VIEW SPACE
 
@@ -61,8 +62,6 @@ public class PullPipelineFactory {
             @Override
             protected void render(float fraction, Model model) {
 
-                pullSource.setFaces(model.getFaces());
-
                 // TODO compute rotation in radians
                 totalRotation += fraction;
                 double rad = totalRotation % (2 * Math.PI);
@@ -70,11 +69,12 @@ public class PullPipelineFactory {
 
                 // TODO create new model rotation matrix using pd.getModelRotAxis and Matrices.rotate
                 Mat4 rotationMatrix = Matrices.rotate((float) rad, pd.getModelRotAxis());
-                pullModelViewTransformationFilter.setRotationMatrix(rotationMatrix);
 
                 // TODO compute updated model-view tranformation
+                pullModelViewTransformationFilter.setRotationMatrix(rotationMatrix);
 
                 // TODO update model-view filter
+                pullSource.setFaces(model.getFaces());
 
                 // TODO trigger rendering of the pipeline
 
