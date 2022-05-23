@@ -8,36 +8,6 @@ import java.util.Queue;
 
 public class PullBackfaceCullingFilter<I extends Face> extends Pull<I, Face> {
 
-//    private Face nextFace = null;
-//
-//    public PullBackfaceCullingFilter(IPull<I> source) {
-//        super(source);
-//    }
-//
-//    @Override
-//    public Face pull() {
-//        prepareNext();
-//        var temp = nextFace;
-//        nextFace = null;
-//        return temp;
-//    }
-//
-//    @Override
-//    public boolean hasNext() {
-//        prepareNext();
-//        return nextFace != null;
-//    }
-//
-//    private void prepareNext() {
-//        while(predecessor.hasNext() && nextFace == null) {
-//            Face f = predecessor.pull();
-//            if (f.getV1().dot(f.getN1()) < 0) {
-//                nextFace = f;
-//            }
-//        }
-//    }
-
-
     public PullBackfaceCullingFilter(IPull<I> predecessor) {
         super(predecessor);
     }

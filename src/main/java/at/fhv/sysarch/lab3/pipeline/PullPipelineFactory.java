@@ -3,6 +3,7 @@ package at.fhv.sysarch.lab3.pipeline;
 import at.fhv.sysarch.lab3.animation.AnimationRenderer;
 import at.fhv.sysarch.lab3.obj.Face;
 import at.fhv.sysarch.lab3.obj.Model;
+import at.fhv.sysarch.lab3.pipeline.data.Pair;
 import at.fhv.sysarch.lab3.pipeline.pull.*;
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Matrices;
@@ -21,11 +22,15 @@ public class PullPipelineFactory {
 
         // TODO 2. perform backface culling in VIEW SPACE
         PullBackfaceCullingFilter<Face> pullBackfaceCullingFilter = new PullBackfaceCullingFilter<>(toBackfaceCullingFilter);
-        PullPipe<Face> toProjectTransformationFilter = new PullPipe<>(pullBackfaceCullingFilter);
+        PullPipe<Face> toPullDepthSortingFilter = new PullPipe<>(pullBackfaceCullingFilter);
 
         // TODO 3. perform depth sorting in VIEW SPACE
+        PullDepthSortingFilter<Face> pullDepthSortingFilter = new PullDepthSortingFilter<>(toPullDepthSortingFilter);
+        PullPipe<Face> toPullColoringFilter = new PullPipe<>(pullDepthSortingFilter);
 
         // TODO 4. add coloring (space unimportant)
+        PullColoringFilter<Face> pullColoringFilter = new PullColoringFilter<>(toPullColoringFilter, pd);
+        PullPipe<Pair<Face, Color>> toProjectTransformationFilter = new PullPipe<>(pullColoringFilter);
 
         // lighting can be switched on/off
         if (pd.isPerformLighting()) {
@@ -37,12 +42,12 @@ public class PullPipelineFactory {
 
 
         }
-        PullProjectTransformationFilter<Face> pullProjectTransformationFilter = new PullProjectTransformationFilter<>(toProjectTransformationFilter, pd);
-        PullPipe<Face> toPullScreenSpaceTransformationFilter = new PullPipe<>(pullProjectTransformationFilter);
+        PullProjectTransformationFilter<Pair<Face, Color>> pullProjectTransformationFilter = new PullProjectTransformationFilter<>(toProjectTransformationFilter, pd);
+        PullPipe<Pair<Face, Color>> toPullScreenSpaceTransformationFilter = new PullPipe<>(pullProjectTransformationFilter);
 
         // TODO 6. perform perspective division to screen coordinates
         PullScreenSpaceTransformationFilter pullScreenSpaceTransformationFilter = new PullScreenSpaceTransformationFilter(toPullScreenSpaceTransformationFilter, pd);
-        PullPipe<Face> afterScreenSpaceTransformation = new PullPipe<>(pullScreenSpaceTransformationFilter);
+        PullPipe<Pair<Face, Color>> afterScreenSpaceTransformation = new PullPipe<>(pullScreenSpaceTransformationFilter);
 
         // TODO 7. feed into the sink (renderer)
 
@@ -79,15 +84,23 @@ public class PullPipelineFactory {
                 // TODO trigger rendering of the pipeline
 
                 while (afterScreenSpaceTransformation.hasNext()) {
-                    Face face = afterScreenSpaceTransformation.pull();
+                    Pair<Face, Color> pair = afterScreenSpaceTransformation.pull();
+
+                    var ctx = pd.getGraphicsContext();
+
+                    ctx.setStroke(pair.snd());
+                    ctx.setFill(pair.snd());
+
+                    var cordX = new double[]{pair.fst().getV1().getX(), pair.fst().getV2().getX(), pair.fst().getV3().getX()};
+                    var cordY = new double[]{pair.fst().getV1().getY(), pair.fst().getV2().getY(), pair.fst().getV3().getY()};
 
 
+                    ctx.fillOval(cordX[0], cordY[0], 2, 2);
 
-                    pd.getGraphicsContext().setStroke(Color.DEEPPINK);
 
-                    pd.getGraphicsContext().strokeLine(face.getV1().getX(), face.getV1().getY(), face.getV2().getX(), face.getV2().getY());
-                    pd.getGraphicsContext().strokeLine(face.getV2().getX(), face.getV2().getY(), face.getV3().getX(), face.getV3().getY());
-                    pd.getGraphicsContext().strokeLine(face.getV3().getX(), face.getV3().getY(), face.getV1().getX(), face.getV1().getY());
+//                    pd.getGraphicsContext().strokeLine(face.getV1().getX(), face.getV1().getY(), face.getV2().getX(), face.getV2().getY());
+//                    pd.getGraphicsContext().strokeLine(face.getV2().getX(), face.getV2().getY(), face.getV3().getX(), face.getV3().getY());
+//                    pd.getGraphicsContext().strokeLine(face.getV3().getX(), face.getV3().getY(), face.getV1().getX(), face.getV1().getY());
 
 
                 }

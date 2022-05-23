@@ -2,30 +2,35 @@ package at.fhv.sysarch.lab3.pipeline.pull;
 
 import at.fhv.sysarch.lab3.obj.Face;
 import at.fhv.sysarch.lab3.pipeline.PipelineData;
+import at.fhv.sysarch.lab3.pipeline.data.Pair;
 import com.hackoeur.jglm.Mat4;
 import com.hackoeur.jglm.Vec4;
+import javafx.scene.paint.Color;
 
-public class PullScreenSpaceTransformationFilter extends Pull<Face, Face> {
+public class PullScreenSpaceTransformationFilter extends Pull<Pair<Face, Color>, Pair<Face, Color>> {
 
     private Mat4 transformation;
 
-    public PullScreenSpaceTransformationFilter(IPull<Face> predecessor, PipelineData pd) {
+    public PullScreenSpaceTransformationFilter(IPull<Pair<Face, Color>> predecessor, PipelineData pd) {
         super(predecessor);
         this.transformation = pd.getViewportTransform();
     }
 
     @Override
-    public Face pull() {
+    public Pair<Face, Color> pull() {
         return transform(predecessor.pull());
     }
 
-    private Face transform(Face face) {
+    private Pair<Face, Color> transform(Pair<Face, Color> pair) {
 
-        return new Face(
-                applyTransformation(face.getV1()),
-                applyTransformation(face.getV2()),
-                applyTransformation(face.getV3()),
-                face
+        return new Pair<>(
+                new Face(
+                        applyTransformation(pair.fst().getV1()),
+                        applyTransformation(pair.fst().getV2()),
+                        applyTransformation(pair.fst().getV3()),
+                        pair.fst()
+                ),
+                pair.snd()
         );
     }
 
