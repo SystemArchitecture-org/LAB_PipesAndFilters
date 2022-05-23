@@ -8,7 +8,7 @@ import java.util.Queue;
 
 public class PullSource extends Pull<Face, Face>{
 
-    private Queue<Face> faces;
+    private final Queue<Face> faces;
 
     public PullSource() {
         super(null);

@@ -3,9 +3,6 @@ package at.fhv.sysarch.lab3.pipeline.pull;
 import at.fhv.sysarch.lab3.obj.Face;
 import com.hackoeur.jglm.Vec4;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class PullBackfaceCullingFilter<I extends Face> extends Pull<I, Face> {
 
     public PullBackfaceCullingFilter(IPull<I> predecessor) {
@@ -23,9 +20,11 @@ public class PullBackfaceCullingFilter<I extends Face> extends Pull<I, Face> {
                 return face;
             }
         }
+
         if (needsCulling(face)) {
-            return new Face(new Vec4(0,0,0,0),new Vec4(0,0,0,0),new Vec4(0,0,0,0),new Vec4(0,0,0,0),new Vec4(0,0,0,0),new Vec4(0,0,0,0));
+            return new Face(new Vec4(0, 0, 0, 0), new Vec4(0, 0, 0, 0), new Vec4(0, 0, 0, 0), new Vec4(0, 0, 0, 0), new Vec4(0, 0, 0, 0), new Vec4(0, 0, 0, 0));
         }
+
         return face;
     }
 

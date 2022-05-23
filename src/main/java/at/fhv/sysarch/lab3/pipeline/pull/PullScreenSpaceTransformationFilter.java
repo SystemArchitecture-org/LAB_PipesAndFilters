@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 
 public class PullScreenSpaceTransformationFilter extends Pull<Pair<Face, Color>, Pair<Face, Color>> {
 
-    private Mat4 transformation;
+    private final Mat4 transformation;
 
     public PullScreenSpaceTransformationFilter(IPull<Pair<Face, Color>> predecessor, PipelineData pd) {
         super(predecessor);
