@@ -30,17 +30,18 @@ public class PullPipelineFactory {
 
         // TODO 4. add coloring (space unimportant)
         PullColoringFilter<Face> pullColoringFilter = new PullColoringFilter<>(toPullColoringFilter, pd);
-        PullPipe<Pair<Face, Color>> toProjectTransformationFilter = new PullPipe<>(pullColoringFilter);
 
         // lighting can be switched on/off
+        PullPipe<Pair<Face, Color>> toProjectTransformationFilter;
+
         if (pd.isPerformLighting()) {
-            // 4a. TODO perform lighting in VIEW SPACE
+            PullPipe<Pair<Face, Color>> toPullLightningFilter = new PullPipe<>(pullColoringFilter);
 
-            // 5. TODO perform projection transformation on VIEW SPACE coordinates
+            // TODO 4a. perform lighting in VIEW SPACE
+            PullLightningFilter<Pair<Face, Color>> pullLightningFilter = new PullLightningFilter<>(toPullLightningFilter, pd);
+            toProjectTransformationFilter = new PullPipe<>(pullLightningFilter);
         } else {
-            // 5. TODO perform projection transformation
-
-
+            toProjectTransformationFilter = new PullPipe<>(pullColoringFilter);
         }
         PullProjectTransformationFilter<Pair<Face, Color>> pullProjectTransformationFilter = new PullProjectTransformationFilter<>(toProjectTransformationFilter, pd);
         PullPipe<Pair<Face, Color>> toPullScreenSpaceTransformationFilter = new PullPipe<>(pullProjectTransformationFilter);
@@ -50,7 +51,7 @@ public class PullPipelineFactory {
         PullPipe<Pair<Face, Color>> afterScreenSpaceTransformation = new PullPipe<>(pullScreenSpaceTransformationFilter);
 
         // TODO 7. feed into the sink (renderer)
-
+        PullRenderer<Pair<Face, Color>> pullRenderer = new PullRenderer<>(afterScreenSpaceTransformation, pd);
 
         // returning an animation renderer which handles clearing of the
         // viewport and computation of the fraction
@@ -82,28 +83,8 @@ public class PullPipelineFactory {
                 pullSource.setFaces(model.getFaces());
 
                 // TODO trigger rendering of the pipeline
+                pullRenderer.render();
 
-                while (afterScreenSpaceTransformation.hasNext()) {
-                    Pair<Face, Color> pair = afterScreenSpaceTransformation.pull();
-
-                    var ctx = pd.getGraphicsContext();
-
-                    ctx.setStroke(pair.snd());
-                    ctx.setFill(pair.snd());
-
-                    var cordX = new double[]{pair.fst().getV1().getX(), pair.fst().getV2().getX(), pair.fst().getV3().getX()};
-                    var cordY = new double[]{pair.fst().getV1().getY(), pair.fst().getV2().getY(), pair.fst().getV3().getY()};
-
-
-                    ctx.fillOval(cordX[0], cordY[0], 2, 2);
-
-
-//                    pd.getGraphicsContext().strokeLine(face.getV1().getX(), face.getV1().getY(), face.getV2().getX(), face.getV2().getY());
-//                    pd.getGraphicsContext().strokeLine(face.getV2().getX(), face.getV2().getY(), face.getV3().getX(), face.getV3().getY());
-//                    pd.getGraphicsContext().strokeLine(face.getV3().getX(), face.getV3().getY(), face.getV1().getX(), face.getV1().getY());
-
-
-                }
             }
         };
     }
