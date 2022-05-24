@@ -43,6 +43,8 @@ public class PullPipelineFactory {
         } else {
             toProjectTransformationFilter = new PullPipe<>(pullColoringFilter);
         }
+
+        // TODO 5. perform projection transformation
         PullProjectTransformationFilter<Pair<Face, Color>> pullProjectTransformationFilter = new PullProjectTransformationFilter<>(toProjectTransformationFilter, pd);
         PullPipe<Pair<Face, Color>> toPullScreenSpaceTransformationFilter = new PullPipe<>(pullProjectTransformationFilter);
 

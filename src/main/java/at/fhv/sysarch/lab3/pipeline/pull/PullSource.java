@@ -6,7 +6,7 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
-public class PullSource extends Pull<Face, Face>{
+public class PullSource extends Pull<Face, Face> {
 
     private final Queue<Face> faces;
 
@@ -15,7 +15,7 @@ public class PullSource extends Pull<Face, Face>{
         this.faces = new ArrayDeque<>();
     }
 
-    public Face pull(){
+    public Face pull() {
         return faces.poll();
     }
 
@@ -23,7 +23,7 @@ public class PullSource extends Pull<Face, Face>{
         this.faces.addAll(faces);
     }
 
-    public boolean hasNext(){
+    public boolean hasNext() {
         return !faces.isEmpty();
     }
 }

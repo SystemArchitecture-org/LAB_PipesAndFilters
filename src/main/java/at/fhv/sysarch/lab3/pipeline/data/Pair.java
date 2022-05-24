@@ -1,8 +1,8 @@
 package at.fhv.sysarch.lab3.pipeline.data;
 
 public class Pair<T1, T2> {
-    private T1 fst;
-    private T2 snd;
+    private final T1 fst;
+    private final T2 snd;
 
     public Pair(T1 f, T2 s) {
         this.fst = f;

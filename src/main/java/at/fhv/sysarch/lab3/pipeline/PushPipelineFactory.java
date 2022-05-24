@@ -63,10 +63,11 @@ public class PushPipelineFactory {
         PushSource pushSource = new PushSource(toPushModelViewTransformationFilter);
 
         // returning an animation renderer which handles clearing of the
-        // viewport and computation of the praction
+        // viewport and computation of the fraction
         return new AnimationRenderer(pd) {
+
             // TODO rotation variable goes in here
-            private int pos = 0;
+            float totalRotation = 0;
 
             /** This method is called for every frame from the JavaFX Animation
              * system (using an AnimationTimer, see AnimationRenderer). 
@@ -75,9 +76,13 @@ public class PushPipelineFactory {
              */
             @Override
             protected void render(float fraction, Model model) {
+
                 // TODO compute rotation in radians
+                totalRotation += fraction;
+                double rad = totalRotation % (2 * Math.PI);
 
                 // TODO create new model rotation matrix using pd.modelRotAxis
+                Mat4 rotationMatrix = Matrices.rotate((float) rad, pd.getModelRotAxis());
 
                 // TODO compute updated model-view tranformation
                 pushModelViewTransformationFilter.setRotationMatrix(rotationMatrix);
@@ -86,12 +91,6 @@ public class PushPipelineFactory {
                 // TODO trigger rendering of the pipeline
                 pushSource.setFaces(model.getFaces());
 
-                // line
-                pd.getGraphicsContext().setStroke(Color.PINK);
-                pd.getGraphicsContext().strokeLine(0+pos,0+pos,100+pos,100+pos);
-                pos++;
-
-                source.write(model);
             }
         };
     }
