@@ -72,8 +72,7 @@ public class PullPipelineFactory {
 
                 // TODO compute rotation in radians
                 totalRotation += fraction;
-                double rad = totalRotation % (2 * Math.PI);
-
+                double rad = totalRotation % (Math.PI * 2);
 
                 // TODO create new model rotation matrix using pd.getModelRotAxis and Matrices.rotate
                 Mat4 rotationMatrix = Matrices.rotate((float) rad, pd.getModelRotAxis());

@@ -1,7 +1,7 @@
 package at.fhv.sysarch.lab3.pipeline.pull;
 
 import at.fhv.sysarch.lab3.obj.Face;
-import at.fhv.sysarch.lab3.pipeline.OperationNotAllowedException;
+import at.fhv.sysarch.lab3.pipeline.exceptions.OperationNotAllowedException;
 import at.fhv.sysarch.lab3.pipeline.PipelineData;
 import at.fhv.sysarch.lab3.pipeline.data.Pair;
 import javafx.scene.canvas.GraphicsContext;

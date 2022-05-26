@@ -1,7 +1,7 @@
 package at.fhv.sysarch.lab3.pipeline.push;
 
 import at.fhv.sysarch.lab3.obj.Face;
-import at.fhv.sysarch.lab3.pipeline.OperationNotAllowedException;
+import at.fhv.sysarch.lab3.pipeline.exceptions.OperationNotAllowedException;
 
 import java.util.ArrayDeque;
 import java.util.List;
